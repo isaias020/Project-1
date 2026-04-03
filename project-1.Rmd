@@ -1,0 +1,195 @@
+---
+title: "Project 1"
+author: "Isaias Sanchez Saavedra"
+date: "2026-04-01"
+output: pdf_document
+---
+
+
+# Contents
+
+## Background .......................................................... 1
+
+## Data ................................................................ 1
+
+## Project Objectives .................................................. 2
+
+## Objective 1 ......................................................... 2
+
+## Objective 2 ......................................................... 2
+
+## Objective 3 ......................................................... 2
+
+## Objective 4 ......................................................... 2
+
+## GitHub Log .......................................................... 2
+
+
+# Background
+
+The World Health Organization has recently employed a new data science initiative, CSIT-165, that uses data science to characterize pandemic diseases. CSIT-165 disseminates data driven analyses to global decision makers.
+
+CSIT-165 is a conglomerate comprised of two fabricated entities: Global Health Union (GHU) and Private Diagnostic Laboratories (PDL). Your and your partner’s role is to play a data scientist from one of these two entities. 
+
+# Data 
+
+Data for 2019 Novel Coronavirus is operated by the John Hopkins University Center for Systems Science and Engineering (JHU CSSE). Data includes daily time series CSV summary tables, including confirmations, recoveries, and deaths. Country/region are countries/regions hat conform to World Health Organization (WHO). Lat and Long refer to coordinates references for the user. Date fields are stored in MM/DD/YYYY format.
+
+```{r,echo=FALSE}
+# Download live data
+conf_url <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
+death_url <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
+
+confirmed <- read.csv(conf_url)
+deaths <- read.csv(death_url)
+```
+
+# Project Objectives 
+
+## Objective 1
+```{r,echo=TRUE}
+# get first day values (column 5 is first date)
+first_day_confirmed <- confirmed[,5]
+first_day_deaths <- deaths[,5]
+
+# find index of max values
+max_confirmed_index <- which.max(first_day_confirmed)
+max_deaths_index <- which.max(first_day_deaths)
+
+# get location of those max values
+origin_confirmed <- confirmed[max_confirmed_index, c("Province.State","Country.Region")]
+origin_deaths <- deaths[max_deaths_index, c("Province.State","Country.Region")]
+
+# check if both match using if statement
+if(origin_confirmed$Country.Region == origin_deaths$Country.Region){
+  
+  # save origin
+  origin <- origin_confirmed
+  
+  # print result
+  print(paste("Origin is:", origin$Province.State, origin$Country.Region))
+}
+```
+
+
+## Objective 2
+```{r,echo=TRUE}
+
+# get last column (latest date)
+latest_col <- ncol(confirmed)
+
+# store the most recent first case day found so far
+most_recent_day <- 0
+
+# list to store regions
+recent_regions <- c()
+
+# loop through each region
+for(i in 1:nrow(confirmed)){
+  
+  # get all date values for that region
+  row_data <- confirmed[i, 5:latest_col]
+  
+  # find days with cases
+  case_days <- which(row_data > 0)
+  
+  # only continue if region has at least one case
+  if(length(case_days) > 0){
+    
+    # get first day with a case
+    first_case_day <- case_days[1]
+    
+    # check if this is the most recent so far
+    if(first_case_day > most_recent_day){
+      
+      # update most recent day
+      most_recent_day <- first_case_day
+      
+      # reset list and store this region
+      recent_regions <- c(confirmed$Country.Region[i])
+      
+    } else if(first_case_day == most_recent_day){
+      
+      # if tie, add to list
+      recent_regions <- c(recent_regions, confirmed$Country.Region[i])
+    }
+  }
+}
+
+# print result
+print(recent_regions)
+```
+## Obeject 3
+
+
+```{r,echo=FALSE}
+
+# 2. Load the library (must do this every time you restart R)
+library(geosphere)
+
+```
+
+```{r,echo=TRUE}
+# get coordinates of origin
+origin_coords <- c(confirmed$Long[max_confirmed_index], confirmed$Lat[max_confirmed_index])
+
+# loop through recent regions
+for(region in recent_regions){
+  
+  # get that region data
+  subset_data <- subset(confirmed, Country.Region == region)
+  
+  # get coordinates
+  coords <- c(subset_data$Long[1], subset_data$Lat[1])
+  
+  # calculate distance in meters
+  distance_meters <- distm(origin_coords, coords)
+  
+  # convert meters to miles
+  distance_miles <- distance_meters * 0.000621371
+  
+  # print result
+  print(paste(region, "is", round(distance_miles,2),
+              "miles away from", origin$Province.State, origin$Country.Region))
+}
+```
+
+##Objective 4 
+```{r, echo=TRUE}
+
+# get latest values
+confirmed_latest <- confirmed[, ncol(confirmed)]
+deaths_latest <- deaths[, ncol(deaths)]
+
+# remove cruise ships (Lat and Long not equal to 0)
+valid_rows <- confirmed$Lat != 0 & confirmed$Long != 0
+
+# create cleaned data
+data <- data.frame(
+  Country = confirmed$Country.Region[valid_rows],
+  Confirmed = confirmed_latest[valid_rows],
+  Deaths = deaths_latest[valid_rows]
+)
+
+# calculate risk score
+data$Risk <- 100 * (data$Deaths / data$Confirmed)
+
+# remove NA values
+data <- data[!is.na(data$Risk), ]
+
+# find highest risk
+highest_risk <- data[which.max(data$Risk), ]
+
+# find lowest risk (if tie → most confirmed)
+min_risk <- min(data$Risk)
+lowest_candidates <- data[data$Risk == min_risk, ]
+lowest_risk <- lowest_candidates[which.max(lowest_candidates$Confirmed), ]
+
+# global risk score
+global_risk <- 100 * sum(data$Deaths) / sum(data$Confirmed)
+
+# print results
+print(highest_risk)
+print(lowest_risk)
+print(paste("Global risk score:", round(global_risk,2)))
+```
