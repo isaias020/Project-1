@@ -1,6 +1,6 @@
 ---
 title: "Project 1"
-author: "Isaias Sanchez Saavedra"
+author: "Isaias Sanchez Saavedra, Jared Woolridge, Meadow Olivas"
 date: "2026-04-01"
 output: html_document
 ---
