@@ -124,7 +124,7 @@ print(recent_regions)
 
 ```{r,echo=FALSE}
 
-# 2. Load the library (must do this every time you restart R)
+# 2. Load the library 
 library(geosphere)
 
 ```
