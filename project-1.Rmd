@@ -195,3 +195,36 @@ print(lowest_risk)
 print(paste("Global risk score:", round(global_risk,2)))
 ```
 The area with the lowest risk score is North Korea, meaning relatively few deaths occurred compared to confirmed cases. The area with the highest risk score is China, where the higher proportion of confirmed cases resulted in death. Compared to the global risk score, these regions show that COVID-19 severity varies widely between locations. Risk scores are useful because they quickly highlight areas that may need more medical resources, but they have limitations. Risk scores assume all cases are detected and do not account for population differences, healthcare quality, or reporting accuracy. Therefore, while helpful, risk scores should be interpreted alongside other information to fully understand the risk level.
+
+
+## Objective 5
+```{r, echo=TRUE}
+#get country values
+country_confirmed <- confirmed[,2]
+country_deaths <- deaths[,2]
+
+data1 <- data.frame(
+  
+)
+
+for (country.region in country_confirmed) {
+  
+  subset_confirmed <- subset(confirmed, country.region == country.region)
+  subset_deaths <- subset(deaths, country.region == country.region)
+  
+  total_conf <- sum(subset_confirmed[,ncol(subset_confirmed)],na.rm = TRUE)
+  
+   sum_confirm <- sum(confirmed[,3], na.rm = TRUE)
+  print(country.region)
+} 
+
+data2 <- data.frame(
+  
+)
+
+ print(sum_confirm)
+ cat(total_conf, sum_confirm)
+
+```
+
+
