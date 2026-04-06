@@ -251,6 +251,10 @@ country_confirmed <- data.frame(
  
  
 ```
+We used a for loop to add up all the cases and deaths for every country to get the total amounts. According to our results, the US has the most confirmed cases at over 103 million, while the US and Brazil have the highest number of deaths. We used the kable package to turn these totals into two clean tables so the top five countries in each category are easy to read.
+
 ## GitHub Log
 
 https://github.com/isaias020/Project-1.git
+
+
