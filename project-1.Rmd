@@ -157,7 +157,7 @@ for(region in recent_regions){
 ```
 The distance between the most recent region and the origin of the first confirmed COVID-19 cases was calculated using geographic coordinates. The R programming language function distm() from the geosphere package was used to measure the distance in meters between the two locations. This value was then converted into miles to make the result easier to understand. The output shows that the United Kingdom is 9033.32 miles away from Hubei, China, which was identified as the origin. This result demonstrates how far the virus spread geographically from its initial outbreak location.
 
-##Objective 4 
+## Objective 4 
 ```{r, echo=TRUE}
 
 # get latest values
