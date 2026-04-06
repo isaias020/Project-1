@@ -72,7 +72,7 @@ if(origin_confirmed$Country.Region == origin_deaths$Country.Region){
   print(paste("Origin is:", origin$Province.State, origin$Country.Region))
 }
 ```
-
+Based on the data from the very first day, the virus started in Hubei, China. This location is the origin because it had the highest number of sick people and deaths at the start of the records. We used an if statement in my code to check and prove that these numbers were the largest in the world on that date.
 
 ## Objective 2
 ```{r,echo=TRUE}
@@ -121,6 +121,8 @@ for(i in 1:nrow(confirmed)){
 # print result
 print(recent_regions)
 ```
+Our analysis shows that the United Kingdom was the most recent place to report its very first case in this dataset. we found this by using a for loop and an if statement to look for the last date where a new area finally showed a number greater than zero. This helps us see how the virus eventually reached its last new location over time.
+
 ## Objective 3
 
 
