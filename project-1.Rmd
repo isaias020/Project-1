@@ -199,32 +199,53 @@ The area with the lowest risk score is North Korea, meaning relatively few death
 
 ## Objective 5
 ```{r, echo=TRUE}
-#get country values
-country_confirmed <- confirmed[,2]
-country_deaths <- deaths[,2]
+#packages needed to make a table and use dplyr
+library(dplyr)
+library(knitr)
 
-data1 <- data.frame(
-  
-)
+#getting the values of deaths and cases
+confirmed_cases <- confirmed[,ncol(confirmed)]
+confirmed_deaths <- deaths[,ncol(deaths)]
 
-for (country.region in country_confirmed) {
-  
-  subset_confirmed <- subset(confirmed, country.region == country.region)
-  subset_deaths <- subset(deaths, country.region == country.region)
-  
-  total_conf <- sum(subset_confirmed[,ncol(subset_confirmed)],na.rm = TRUE)
-  
-   sum_confirm <- sum(confirmed[,3], na.rm = TRUE)
-  print(country.region)
-} 
+#linking the cases with the country
+country_confirmed <- data.frame(
+  Country = confirmed$Country.Region[valid_rows],
+  coun_con = confirmed_cases[valid_rows]
+  )
 
-data2 <- data.frame(
-  
-)
-
- print(sum_confirm)
- cat(total_conf, sum_confirm)
-
+#linking the deaths with the country
+ country_deaths <- data.frame(
+   countryd = deaths$Country.Region[valid_rows],
+   coun_dea = confirmed_deaths[valid_rows]
+   )
+ 
+ #using dplyr to group the different regions of a country and sorting the confirmed cases by country and taking only the top 5 highest values
+ total_confirmed <- country_confirmed %>%
+   group_by(Country) %>%
+   summarize(amnt_con=sum(coun_con, na.rm = TRUE))%>%
+   arrange(desc(amnt_con))%>%
+   slice(1:5)
+ 
+ ##using dplyr to group different regions of a county and sorting the deaths by country and taking the 5 countries with the hihgest values
+ total_deaths <- country_deaths %>%
+   group_by(countryd) %>%
+   summarize(amnt_deaths=sum(coun_dea, na.rm =TRUE))%>%
+   arrange(desc(amnt_deaths))%>%
+   slice(1:5)
+ 
+ # 
+ # country_total <- data.frame(
+ #   Country = total_confirmed[1],
+ #   Cases = total_confirmed[2],
+ #   Deaths = total_deaths[2]
+ # )
+ # 
+ 
+ # The tables for the top 5 countries with confirmed cases and the top 5 countries with confirmed deaths.
+ kable(total_confirmed, col.names = c("Country", "Confirmed Cases"))
+ kable(total_deaths, col.names = c("Country", "Confirmed Deaths"))
+ 
+ 
 ```
 
 
