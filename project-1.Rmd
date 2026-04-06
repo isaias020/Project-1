@@ -126,7 +126,7 @@ Our analysis shows that the United Kingdom was the most recent place to report i
 ## Objective 3
 
 
-```{r,echo=FALSE}
+```{r,echo=TRUE}
 
 # Load the library 
 library(geosphere)
